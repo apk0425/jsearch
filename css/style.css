@@ -1,0 +1,165 @@
+/* 
+    Document   : style
+    Created on : 09-feb-2013, 9:21:10
+    Author     : andres
+    Description:
+        Purpose of the stylesheet follows.
+*/
+html{
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    top: 0;
+}
+
+body{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: arial;
+    font-size: 100%;
+
+}
+
+#logo{
+    text-align: center;
+}
+
+#searchForm{
+    width: auto;
+    height: auto;
+    overflow: hidden;
+}
+
+#wrapper{
+    display: none;
+    top: 30px;
+    position: relative;
+    width: 55%;
+    height: auto;
+    overflow: hidden;
+    margin: 0 auto;
+    opacity: 0;
+    -webkit-transition: opacity 1s, -webkit-transform 0.5s;
+    -webkit-transform: translateX(40px);
+    -ms-transition: opacity 1s, -ms-transform 0.5s;
+    -ms-transform: translateX(40px);
+    -o-transition: opacity 1s, -o-transform 0.5s;
+    -o-transform: translateX(40px);
+    -moz-transition: opacity 1s, -moz-transform 0.5s;
+    -moz-transform: translateX(40px);
+}
+
+#inputSearch{
+    width: 94%;
+}
+
+#searchForm input{
+    height: 30px;
+    border: 1px solid #CCC;
+    padding: 0 1%;
+    width: 98%;
+}
+
+#searchForm input:focus{
+    outline: 0;
+    border: 1px solid #0066A2;
+}
+
+#wrapper #searchForm div{
+    float: left;
+}
+
+#buttonStay{
+    width: 5%;
+    height: 32px;
+    margin-left: 1%;
+}
+
+#buttonStay button{
+    -webkit-appearance: none;
+    border: 0;
+    background: #2F476B;
+    color: white;
+    height: 32px;
+    width: 100%;
+}
+
+.initWeb{
+    -webkit-transform: translateX(0px) !important;
+    -ms-transform: translateX(0px) !important;
+    -o-transform: translateX(0px) !important;
+    -moz-transform: translateX(0px) !important;
+    opacity: 1 !important;
+}
+
+#logo{
+    height: 190px;
+    overflow: hidden;
+    -webkit-transition: opacity 1s, height 0.5s;
+    -ms-transition: opacity 1s, height 0.5s;
+    -o-transition: opacity 1s, height 0.5s;
+    -moz-transition: opacity 1s, height 0.5s;
+}
+
+.closeLogo{
+    height: 0 !important;
+}
+
+#found{
+    display: none;
+    position: relative;
+    top: 30px;
+    width: 70%;
+    margin: 50px auto;
+    opacity: 0;
+    -webkit-transition: opacity 1s, -webkit-transform 0.5s;
+    -webkit-transform: translateX(40px);
+    -ms-transition: opacity 1s, -ms-transform 0.5s;
+    -ms-transform: translateX(40px);
+    -o-transition: opacity 1s, -o-transform 0.5s;
+    -o-transform: translateX(40px);
+    -moz-transition: opacity 1s, -moz-transform 0.5s;
+    -moz-transform: translateX(40px);
+}
+
+.linkGreen{
+    color: green;
+}
+
+.description{
+    margin-top: 20px;
+}
+
+.itemResult{
+    display: none;
+}
+
+#section1{
+    display: block;
+}
+
+#paginator{
+    display: none;
+    text-align: center;
+    width: 70%;
+    margin: 0 auto;
+    opacity: 0;
+    -webkit-transition: opacity 1s, -webkit-transform 0.5s;
+    -webkit-transform: translateX(40px);
+    -ms-transition: opacity 1s, -ms-transform 0.5s;
+    -ms-transform: translateX(40px);
+    -o-transition: opacity 1s, -o-transform 0.5s;
+    -o-transform: translateX(40px);
+    -moz-transition: opacity 1s, -moz-transform 0.5s;
+    -moz-transform: translateX(40px);
+}
+
+#arrowPrevious{
+    display: none;
+}
+
+.alert{
+    text-align: center;
+}
