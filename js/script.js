@@ -5,7 +5,21 @@
  * http://www.cornersopensource.com
  * skype: andres54211
  */
+var automatically = false; //search into folder files
+var items = [];
+var itemsFound = [];
+
 window.onload = function() {
+    if (!automatically) {
+        var imported = document.createElement('script');
+        imported.src = 'js/database.js';
+        document.head.appendChild(imported);
+    } else {
+        var url = "php/";
+        $.getJSON(url, function(data) {
+            items = data;
+        });
+    }
     $("#arrowPrevious").click(function() {
         $("#section" + currentPaginator).hide();
         currentPaginator--;
@@ -36,13 +50,7 @@ window.onload = function() {
     setTimeout(function() {
         $("#wrapper").addClass("initWeb");
     }, 500);
-
 };
-var items = [];
-var itemsFound = [];
-function addItem(title, link, description) {
-    items.push({"title": title, "link": link, "description": description});
-}
 
 function search() {
     itemsFound = [];
@@ -52,8 +60,10 @@ function search() {
     setTimeout(function() {
         var matchString = document.forms.searchForm.search.value;
         for (var k in items) {
-            if (items[k].link.toLowerCase().indexOf(matchString.toLowerCase()) !== -1)
+            if (items[k].title.toLowerCase().match(matchString.toLowerCase()) ||
+                    items[k].description.toLowerCase().match(matchString.toLowerCase())) {
                 itemsFound.push(items[k]);
+            }
 
             if (k == (items.length - 1))
                 appendElements(itemsFound);
@@ -83,10 +93,10 @@ function appendElements(itemsFound) {
     } else {
         if (amountToSee[0] == 0) {
             $.error = $('\
-                                    <div class="alert">\
-                                        No se han encontrado resultados. Por favor inserte una nueva palabra\
-                                    </div>\
-                                    ');
+                <div class="alert">\
+                    No se han encontrado resultados. Por favor inserte una nueva palabra\
+                </div>\
+            ');
             $("#found").append($.error);
             addClass(document.getElementById("found"), "initWeb");
         } else {
@@ -105,12 +115,12 @@ function appendElements(itemsFound) {
         for (var i = (current * show); i <= ((show * s) - 1); i++) {
             if (itemsFound[i]) {
                 $.result = $('\
-				<div class="itemResultado">\
-                                        <a href=' + itemsFound[i].link + '>' + itemsFound[i].title + '</a>\
-                                        <div class="linkGreen">' + itemsFound[i].link + '</div>\
-                                        <div>' + itemsFound[i].description + '</div><br/>\
-				</div>\
-				');
+                    <div class="itemResultado">\
+                            <a href=' + itemsFound[i].link + '>' + itemsFound[i].title + '</a>\
+                            <div class="linkGreen">' + itemsFound[i].link + '</div>\
+                            <div>' + itemsFound[i].description + '</div><br/>\
+                    </div>\
+                ');
                 $("#section" + s).append($.result);
                 if (i == ((show * s) - 1)) {
                     current++;
@@ -158,5 +168,9 @@ function removeClass(ele, cls) {
         var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
         ele.className = ele.className.replace(reg, '');
     }
+}
+
+function addItem(title, link, description) {
+    items.push({"title": title, "link": link, "description": description});
 }
 
