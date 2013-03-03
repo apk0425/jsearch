@@ -1,11 +1,12 @@
 <?php
 
-$dir = '../files/'; //define your folder to search, for default is files
-$files1 = scandir($dir);
-$ele = array();
-$total = count((array) $files1);
 $url = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
-$url .= $_SERVER['SERVER_PORT'] != '80' ? $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"] : $_SERVER['SERVER_NAME'];
+$url .= $_SERVER['SERVER_PORT'] != '80' ? $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"] : $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
+$urlPath = explode("php/", $url);
+$dir = 'files/'; //define your folder to search, for default is files
+$files = scandir("../" . $dir); //if the folder "files" isn't in raiz please change "../"
+$ele = array();
+$total = count((array) $files);
 
 function file_get_contents_curl($url) {
     $ch = curl_init();
@@ -20,8 +21,8 @@ function file_get_contents_curl($url) {
     return $data;
 }
 
-foreach ($files1 as $key => $value) {
-    $html = file_get_contents_curl($url . "/jsearch/files/" . $value);
+foreach ($files as $key => $value) {
+    $html = file_get_contents_curl($urlPath[0] . $dir . $value);
     $doc = new DOMDocument();
     @$doc->loadHTML($html);
     $nodes = $doc->getElementsByTagName('title');
@@ -39,7 +40,7 @@ foreach ($files1 as $key => $value) {
     }
     $t = substr(strrchr($value, '.'), 1);
     if ($t) {
-        $file = $url . "/jsearch/files/" . $value;
+        $file = $urlPath[0] . $dir . $value;
         if (strtolower(substr($file, stripos($file, ".htm"))) == ".htm" || strtolower(substr($file, stripos($file, ".html"))) == ".html" || strtolower(substr($file, stripos($file, ".asp"))) == ".asp" || strtolower(substr($file, stripos($file, ".php"))) == ".php") {
             $obj = array(
                 "title" => $title,

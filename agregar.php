@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST['submit'])) {
     $fp = fopen("js/database.js", "a");
-    $add = 'addItem("' . $_POST['titulo'] . '", "' . $_POST['link'] . '", "' . $_POST['desc'] . '");';
+    $add = 'jsearch.addItem("' . $_POST['titulo'] . '", "' . $_POST['link'] . '", "' . $_POST['desc'] . '");';
     fwrite($fp, $add . PHP_EOL);
     fclose($fp);
 
