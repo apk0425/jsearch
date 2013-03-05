@@ -77,7 +77,7 @@ window.onload = function() {
             } else if (window.event) /* for ie */ {
                 window.event.returnValue = false;
             }
-            if(!that.busy){
+            if (!that.busy) {
                 that.busy = true;
                 that.find();
             }
@@ -122,7 +122,8 @@ window.onload = function() {
             var matchString = document.forms.searchForm.search.value;
             for (var k in that.items) {
                 if (that.items[k].title.toLowerCase().match(matchString.toLowerCase()) ||
-                        that.items[k].description.toLowerCase().match(matchString.toLowerCase())) {
+                        that.items[k].description.toLowerCase().match(matchString.toLowerCase()) ||
+                        that.items[k].claves.toLowerCase().match(matchString.toLowerCase())) {
                     that.itemsFound.push(that.items[k]);
                 }
 
@@ -195,8 +196,8 @@ window.onload = function() {
         this.busy = false;
     };
 
-    search.prototype.addItem = function(title, link, description) {
-        this.items.push({"title": title, "link": link, "description": description});
+    search.prototype.addItem = function(title, link, description, claves) {
+        this.items.push({"title": title, "link": link, "description": description, "claves": claves});
     };
 
     search.prototype.hasClass = function(ele, cls) {

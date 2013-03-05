@@ -52,7 +52,7 @@ foreach ($files as $key => $value) {
             $obj = array(
                 "title" => $value,
                 "link" => $file,
-                "description" => "image"
+                "description" => ""
             );
             array_push($ele, $obj);
         }

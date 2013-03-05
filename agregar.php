@@ -1,7 +1,7 @@
 <?php
 if (isset($_POST['submit'])) {
     $fp = fopen("js/database.js", "a");
-    $add = 'jsearch.addItem("' . $_POST['titulo'] . '", "' . $_POST['link'] . '", "' . $_POST['desc'] . '");';
+    $add = 'jsearch.addItem("' . $_POST['titulo'] . '", "' . $_POST['link'] . '", "' . $_POST['desc'] . '", "' . $_POST['claves'] . '");';
     fwrite($fp, $add . PHP_EOL);
     fclose($fp);
 
@@ -21,13 +21,15 @@ if (isset($_POST['submit'])) {
     <div id="page-wrap">
         <div id="contact-area">
             <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" />
-                <label for="titulo">Titulo:</label>
-                <input type="text" name="titulo" required="required" id="titulo"/>
-                <label for="link">Link:</label>
-                <input type="text" name="link" required="required" id="link"/>
-                <label for="descripcion">Descripción:</label>
-                <input type="text" name="desc" required="required" id="descripcion"/>
-                <input type="submit" name="submit" value="Agregar" class="submit-button" />
+            <label for="titulo">Titulo:</label>
+            <input type="text" name="titulo" required="required" id="titulo"/>
+            <label for="link">Link:</label>
+            <input type="text" name="link" required="required" id="link"/>
+            <label for="descripcion">Descripci&oacute;n:</label>
+            <input type="text" name="desc" required="required" id="descripcion"/>
+            <label for="claves">Palabras claves:</label>
+            <input type="text" name="claves" required="required" id="claves"/>
+            <input type="submit" name="submit" value="Agregar" class="submit-button" />
             </form>
             <div style="clear: both;"></div>
         </div>
