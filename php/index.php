@@ -38,21 +38,23 @@ foreach ($files as $key => $value) {
         if ($meta->getAttribute('name') == 'keywords')
             $keywords = $meta->getAttribute('content');
     }
-    $t = substr(strrchr($value, '.'), 1);
-    if ($t) {
+    $validateDot = substr(strrchr($value, '.'), 1);
+    if ($validateDot && $validateDot != "DS_Store") {
         $file = $urlPath[0] . $dir . $value;
         if (strtolower(substr($file, stripos($file, ".htm"))) == ".htm" || strtolower(substr($file, stripos($file, ".html"))) == ".html" || strtolower(substr($file, stripos($file, ".asp"))) == ".asp" || strtolower(substr($file, stripos($file, ".php"))) == ".php") {
             $obj = array(
                 "title" => $title,
                 "link" => $file,
-                "description" => $keywords
+                "description" => $description,
+                "claves" => $keywords
             );
             array_push($ele, $obj);
         } else {
             $obj = array(
                 "title" => $value,
                 "link" => $file,
-                "description" => ""
+                "description" => "",
+                "claves" => ""
             );
             array_push($ele, $obj);
         }

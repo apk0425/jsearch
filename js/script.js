@@ -9,7 +9,7 @@
 window.onload = function() {
     var that = null;
     var search = function() {
-        this.automatically = false; //search into folder files
+        this.automatically = true; //search into folder files
         this.items = [];
         this.itemsFound = [];
         this.totalPages = 0;
