@@ -9,10 +9,8 @@ Esta versión del buscador tiene la opción de buscar en un directorio específi
 Para activar esta opción solo debes que igualar la variable "automatically" a "true" ubicado en el directorio "js" y así ará la búsqueda en el directorio establecido.
 
 Por defecto es false, por esto buscará por las palabras que estén en el archivo "database.js", que está en el directorio "js"
-
-guidance:
-
-    command(:rest2html, /re?st(.txt)?/)
+    
+    this.automatically = true
     
 Para verlo funcionando puedes acceder a este enlace:
 [Jsearch](http://www.cornersopensource.com/jsearch)
