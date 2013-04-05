@@ -10,6 +10,10 @@ Para activar esta opción solo debes que igualar la variable "automatically" a "
 
 Por defecto es false, por esto buscará por las palabras que estén en el archivo "database.js", que está en el directorio "js"
 
+guidance:
+
+    command(:rest2html, /re?st(.txt)?/)
+    
 Para verlo funcionando puedes acceder a este enlace:
 [Jsearch](http://www.cornersopensource.com/jsearch)
 
