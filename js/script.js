@@ -1,24 +1,38 @@
 /* 
- * Version 4.2
+ * Version 4.3
  * Created by serdnah2
  * @Andres542
  * http://www.cornersopensource.com
  * skype: andres54211
- * If you need the jsearch search in an folder, please change de var automatically for true, default is false
+ * If you need the search search in an folder, please change de var automatically for true, default is false
  */
+
 window.onload = function() {
+    window.scrollTo(0, 0);
     var that = null;
-    var search = function() {
-        this.automatically = false; //search into folder files
+    var jsearch = function() {
+        this.automatically = true; //search into folder files
         this.items = [];
         this.itemsFound = [];
         this.totalPages = 0;
         this.currentPaginator = 0;
         this.busy = false;
+        this.latesSearch = null;
+        this.blockScreen = true;
+        this.move = false;
+        this.ismobile = this.detectBrowser();
+        that = this;
     };
 
-    search.prototype.init = function() {
-        that = this;
+    jsearch.prototype.init = function() {
+        document.body.addEventListener("touchmove", function(e) {
+            if (that.blockScreen)
+                e.preventDefault();
+        }, false);
+
+        if (!this.ismobile)
+            document.documentElement.style.overflow = "scroll";
+
         function getHTTPObject() {
             if (typeof XMLHttpRequest != 'undefined') {
                 return new XMLHttpRequest();
@@ -33,38 +47,41 @@ window.onload = function() {
             }
             return false;
         }
+        var url = null;
+        if (this.automatically)
+            url = "php/?v=" + (new Date()).getTime();
+        else
+            url = "js/database.js?v=" + (new Date()).getTime();
 
-        if (this.automatically) {
-            var http = getHTTPObject();
-            var url = "php/";
-            http.open("GET", url, true);
-            http.onreadystatechange = function() {
-                if (http.readyState === 4) {
-                    that.items = JSON.parse(http.responseText);
-                    that.show();
-                }
-            };
-            http.send(null);
-        } else {
-            var imported = document.createElement('script');
-            imported.src = 'js/database.js';
-            document.head.appendChild(imported);
-            this.show();
-        }
+        this.get("loading").style.display = "block";
+        var http = getHTTPObject();
+        http.open("GET", url, true);
+        http.onreadystatechange = function() {
+            if (http.readyState === 4) {
+                that.items = JSON.parse(http.responseText);
+                that.show();
+            }
+        };
+        http.send(null);
     };
 
-    search.prototype.show = function() {
-        document.getElementById('wrapper').style.display = "block";
-        document.getElementById('found').style.display = "block";
-        document.getElementById('paginator').style.display = "block";
+    jsearch.prototype.show = function() {
+        this.get("loading").style.display = "none";
+        this.get('wrapper').style.display = "block";
+        this.get('found').style.display = "block";
+        this.get('paginator').style.display = "block";
         setTimeout(function() {
-            that.addClass(document.getElementById("wrapper"), "initWeb", that);
+            that.addClass(that.get("wrapper"), "initWeb");
             that.listeners();
+            setTimeout(function() {
+                that.blockScreen = false;
+                withSlopeFinite(that.get('found'));
+            }, 1000);
         }, 500);
     };
 
-    search.prototype.listeners = function() {
-        var element = document.getElementById("searchForm");
+    jsearch.prototype.listeners = function() {
+        var element = that.get("searchForm");
         if (element.addEventListener) {
             element.addEventListener("submit", submitForm, false);
         } else if (element.attachEvent) {
@@ -77,49 +94,68 @@ window.onload = function() {
             } else if (window.event) /* for ie */ {
                 window.event.returnValue = false;
             }
-            if (!that.busy) {
+
+            var valueSearch = document.forms.searchForm.search.value;
+            var validateSearch = that.trim(valueSearch);
+            if (!that.busy && validateSearch !== "" && that.latesSearch !== validateSearch) {
                 that.busy = true;
                 that.find();
             }
         }
 
-        var arrowPrevious = document.getElementById("arrowPrevious");
+        var arrowPrevious = this.get("arrowPrevious");
         arrowPrevious.addEventListener("click", function() {
-            document.getElementById("section" + that.currentPaginator).style.display = "none";
-            that.currentPaginator--;
-            document.getElementById("section" + that.currentPaginator).style.display = "inline-block";
-            document.getElementById("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
-            if (that.currentPaginator === 1) {
-                document.getElementById("arrowPrevious").style.display = "none";
-            }
-            if (that.currentPaginator < that.totalPages) {
-                document.getElementById("arrowNext").style.display = "inline-block";
+            var isDisabled = that.hasClass(this, "disabled");
+            if (!isDisabled && that.move) {
+                that.move = false;
+                window.scrollTo(0, 0);
+                that.get("section" + that.currentPaginator).style.display = "none";
+                that.currentPaginator--;
+                that.get("section" + that.currentPaginator).style.display = "inline-block";
+                that.get("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
+                if (that.currentPaginator === 1) {
+                    that.addClass(this, " disabled");
+                }
+                if (that.currentPaginator < that.totalPages) {
+                    that.removeClass(that.get("arrowNext"), "disabled");
+                }
+                that.move = true;
             }
         });
 
-        var arrowNext = document.getElementById("arrowNext");
+        var arrowNext = this.get("arrowNext");
         arrowNext.addEventListener("click", function() {
-            document.getElementById("section" + that.currentPaginator).style.display = "none";
-            that.currentPaginator++;
-            document.getElementById("section" + that.currentPaginator).style.display = "inline-block";
-            document.getElementById("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
-            if (that.totalPages == that.currentPaginator) {
-                document.getElementById("arrowNext").style.display = "none";
-            }
-            if (that.currentPaginator > 1) {
-                document.getElementById("arrowPrevious").style.display = "inline-block";
+            var isDisabled = that.hasClass(this, "disabled");
+            if (!isDisabled && that.move) {
+                that.move = false;
+                window.scrollTo(0, 0);
+                that.get("section" + that.currentPaginator).style.display = "none";
+                that.currentPaginator++;
+                that.get("section" + that.currentPaginator).style.display = "inline-block";
+                that.get("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
+                if (that.totalPages == that.currentPaginator) {
+                    that.addClass(this, " disabled");
+                }
+                if (that.currentPaginator > 1) {
+                    that.removeClass(that.get("arrowPrevious"), "disabled");
+                }
+                that.move = true;
+
             }
         });
     };
 
-    search.prototype.find = function() {
+    jsearch.prototype.find = function() {
+        if (this.ismobile)
+            document.forms.searchForm.search.blur();
         this.itemsFound = [];
-        this.removeClass(document.getElementById("paginator"), "initWeb", this);
-        this.removeClass(document.getElementById("found"), "initWeb", this);
-        this.addClass(document.getElementById("logo"), "closeLogo", this);
+        this.removeClass(this.get("paginator"), "initWeb");
+        this.removeClass(this.get("found"), "initWeb");
+        this.addClass(this.get("logo"), "closeLogo");
 
         setTimeout(function() {
-            var matchString = document.forms.searchForm.search.value;
+            var matchString = that.trim(document.forms.searchForm.search.value);
+            that.latesSearch = matchString;
             for (var k in that.items) {
                 if (that.items[k].title.toLowerCase().match(matchString.toLowerCase()) ||
                         that.items[k].description.toLowerCase().match(matchString.toLowerCase()) ||
@@ -133,9 +169,9 @@ window.onload = function() {
         }, 1000);
     };
 
-    search.prototype.appendElements = function() {
+    jsearch.prototype.appendElements = function() {
         this.resetPaginator();
-        document.getElementById("found").innerHTML = "";
+        this.get("found").innerHTML = "";
         var totalData = this.itemsFound.length;
         var show = 10;
         var amountToSee = (totalData / show);
@@ -143,9 +179,9 @@ window.onload = function() {
         amountToSee = amountToSee.split(".");
         if (amountToSee[1]) {
             if (amountToSee[0] == 0) {
-                document.getElementById("arrowNext").style.display = "none";
+                this.addClass(this.get("arrowNext"), " disabled");
             } else {
-                that.addClass(document.getElementById("paginator"), "initWeb", that);
+                this.addClass(this.get("paginator"), "initWeb");
             }
             amountToSee = amountToSee[0];
             amountToSee++;
@@ -153,11 +189,11 @@ window.onload = function() {
 
         } else {
             if (amountToSee[0] == 0) {
-                document.getElementById("found").innerHTML = '<div class="alert">No se han encontrado resultados. Por favor inserte una nueva palabra</div>';
-                that.addClass(document.getElementById("found"), "initWeb", that);
+                this.get("found").innerHTML = '<div class="alert alert-info">No se han encontrado resultados. Por favor inserte una nueva palabra</div>';
+                this.addClass(this.get("found"), "initWeb");
             } else {
                 if (amountToSee[0] == 1) {
-                    document.getElementById("arrowNext").style.display = "inline-block";
+                    this.removeClass(this.get("arrowNext"), "disabled");
                 }
                 this.totalPages = amountToSee;
             }
@@ -166,11 +202,11 @@ window.onload = function() {
 
         var current = 0;
         for (var s = 1; s <= amountToSee; s++) {
-            var divFound = document.getElementById("found");
+            var divFound = this.get("found");
             divFound.innerHTML = divFound.innerHTML + '<div id="section' + s + '" class="itemResult"></div>';
             for (var i = (current * show); i <= ((show * s) - 1); i++) {
                 if (that.itemsFound[i]) {
-                    var divSection = document.getElementById("section" + s);
+                    var divSection = this.get("section" + s);
                     divSection.innerHTML = divSection.innerHTML + '<div class="itemResultado"><a href=' + that.itemsFound[i].link + '>' + that.itemsFound[i].title + '</a><div class="linkGreen">' + that.itemsFound[i].link + '</div><div>' + that.itemsFound[i].description + '</div><br/></div>';
                     if (i == ((show * s) - 1)) {
                         current++;
@@ -179,43 +215,62 @@ window.onload = function() {
 
             }
             if (amountToSee == s) {
-                document.getElementById("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
-                that.addClass(document.getElementById("found"), "initWeb", that);
-                that.addClass(document.getElementById("paginator"), "initWeb", that);
+                this.get("currentPages").innerHTML = "P&aacute;gina " + that.currentPaginator + " de: " + that.totalPages;
+                that.addClass(this.get("found"), "initWeb");
+                that.addClass(this.get("paginator"), "initWeb");
+                setTimeout(function() {
+                    that.move = true;
+                }, 1000);
             }
 
         }
     };
 
-    search.prototype.resetPaginator = function() {
+    jsearch.prototype.resetPaginator = function() {
         this.totalPages = 0;
         this.currentPaginator = 1;
-        document.getElementById("arrowPrevious").style.display = "none";
-        document.getElementById("currentPages").innerHTML = "P&aacute;gina " + this.currentPaginator;
-        document.getElementById("arrowNext").style.display = "inline-block";
+        this.get("currentPages").innerHTML = "P&aacute;gina " + this.currentPaginator;
+        this.removeClass(this.get("arrowNext"), "disabled");
+        var isDisabled = this.hasClass(that.get("arrowPrevious"), "disabled");
+        if (!isDisabled) {
+            that.addClass(this.get("arrowPrevious"), " disabled");
+        }
         this.busy = false;
     };
 
-    search.prototype.addItem = function(title, link, description, claves) {
+    jsearch.prototype.addItem = function(title, link, description, claves) {
         this.items.push({"title": title, "link": link, "description": description, "claves": claves});
     };
 
-    search.prototype.hasClass = function(ele, cls) {
+    jsearch.prototype.hasClass = function(ele, cls) {
         return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     };
 
-    search.prototype.addClass = function(ele, cls, that) {
-        if (!that.hasClass(ele, cls))
+    jsearch.prototype.addClass = function(ele, cls) {
+        if (!this.hasClass(ele, cls))
             ele.className += cls;
     };
 
-    search.prototype.removeClass = function(ele, cls, that) {
-        if (that.hasClass(ele, cls)) {
+    jsearch.prototype.removeClass = function(ele, cls) {
+        if (this.hasClass(ele, cls)) {
             var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
             ele.className = ele.className.replace(reg, '');
         }
     };
 
-    jsearch = new search();
-    jsearch.init();
+    jsearch.prototype.trim = function(string) {
+        return string.replace(/^\s+/g, '').replace(/\s+$/g, '');
+    };
+
+    jsearch.prototype.get = function(obj) {
+        return document.getElementById(obj);
+    };
+
+    jsearch.prototype.detectBrowser = function() {
+        var ismobile = (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile|msie/i.test(navigator.userAgent.toLowerCase()));
+        return ismobile;
+    };
+
+    search = new jsearch();
+    search.init();
 };

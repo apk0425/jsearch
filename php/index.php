@@ -1,12 +1,31 @@
 <?php
 
+error_reporting(0);
+$files = array();
+$dir = "";
+$folderToFind = "files/";
+if ($folderToFind != "") {
+    if (substr($folderToFind, 0, 1) === "/") {
+        $folderToFind = substr($folderToFind, 1);
+    }
+
+    if (substr($folderToFind, -1) === "/") {
+        $dir = "../" . $folderToFind;
+    } else {
+        $dir = "../" . $folderToFind . "/";
+    }
+} else {
+    $obj = array(
+        "error" => "Please define a folder in var &#36;folderToFind",
+        "line_code" => "line 5 index.php"
+    );
+    print json_encode($obj);
+    return;
+}
+
 $url = $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
 $url .= $_SERVER['SERVER_PORT'] != '80' ? $_SERVER["SERVER_NAME"] . ":" . $_SERVER["SERVER_PORT"] . $_SERVER["REQUEST_URI"] : $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'];
 $urlPath = explode("php/", $url);
-$dir = 'files/'; //define your folder to search, for default is files
-$files = scandir("../" . $dir); //if the folder "files" isn't in raiz please change "../"
-$ele = array();
-$total = count((array) $files);
 
 function file_get_contents_curl($url) {
     $ch = curl_init();
@@ -21,45 +40,61 @@ function file_get_contents_curl($url) {
     return $data;
 }
 
-foreach ($files as $key => $value) {
-    $html = file_get_contents_curl($urlPath[0] . $dir . $value);
-    $doc = new DOMDocument();
-    @$doc->loadHTML($html);
-    $nodes = $doc->getElementsByTagName('title');
+function listFolderFiles($dir) {
+    global $files;
+    global $urlPath;
+    $ffs = scandir($dir);
+    foreach ($ffs as $ff) {
+        if ($ff != '.' && $ff != '..' && $ff != ".DS_Store") {
+            if (is_dir($dir . $ff)) {
+                listFolderFiles($dir . $ff . '/');
+            } else {
+                $fileSplode = explode("../", $dir);
+                $file = $urlPath[0] . $fileSplode[1] . $ff;
 
-    $title = $nodes->item(0)->nodeValue;
+                if (strtolower(substr($file, stripos($file, ".htm"))) == ".htm" || strtolower(substr($file, stripos($file, ".html"))) == ".html" || strtolower(substr($file, stripos($file, ".asp"))) == ".asp" || strtolower(substr($file, stripos($file, ".php"))) == ".php") {
+                    $html = file_get_contents_curl($urlPath[0] . $fileSplode[1] . $ff);
+                    $doc = new DOMDocument();
+                    @$doc->loadHTML($html);
+                    $nodes = $doc->getElementsByTagName('title');
 
-    $metas = $doc->getElementsByTagName('meta');
+                    $title = $nodes->item(0)->nodeValue;
 
-    for ($i = 0; $i < $metas->length; $i++) {
-        $meta = $metas->item($i);
-        if ($meta->getAttribute('name') == 'description')
-            $description = $meta->getAttribute('content');
-        if ($meta->getAttribute('name') == 'keywords')
-            $keywords = $meta->getAttribute('content');
-    }
-    $t = substr(strrchr($value, '.'), 1);
-    if ($t) {
-        $file = $urlPath[0] . $dir . $value;
-        if (strtolower(substr($file, stripos($file, ".htm"))) == ".htm" || strtolower(substr($file, stripos($file, ".html"))) == ".html" || strtolower(substr($file, stripos($file, ".asp"))) == ".asp" || strtolower(substr($file, stripos($file, ".php"))) == ".php") {
-            $obj = array(
-                "title" => $title,
-                "link" => $file,
-                "description" => $keywords
-            );
-            array_push($ele, $obj);
-        } else {
-            $obj = array(
-                "title" => $value,
-                "link" => $file,
-                "description" => ""
-            );
-            array_push($ele, $obj);
+                    $metas = $doc->getElementsByTagName('meta');
+
+                    for ($i = 0; $i < $metas->length; $i++) {
+                        $meta = $metas->item($i);
+                        if ($meta->getAttribute('name') == 'description')
+                            $description = $meta->getAttribute('content');
+                        if ($meta->getAttribute('name') == 'keywords')
+                            $keywords = $meta->getAttribute('content');
+                    }
+
+                    $description == null ? $description = "" : 0;
+                    $keywords == null ? $keywords = "" : 0;
+                    $title == null ? $title = "" : 0;
+
+                    $obj = array(
+                        "title" => $title,
+                        "link" => $file,
+                        "description" => $description,
+                        "claves" => $keywords
+                    );
+                    array_push($files, $obj);
+                } else {
+                    $obj = array(
+                        "title" => $ff,
+                        "link" => $file,
+                        "description" => "",
+                        "claves" => ""
+                    );
+                    array_push($files, $obj);
+                }
+            }
         }
     }
-
-    if ($total - 1 === $key) {
-        print json_encode($ele);
-    }
 }
+
+listFolderFiles($dir);
+print json_encode($files);
 ?>
