@@ -13,7 +13,7 @@ Debes que cambiar el valor de el atributo "automatically" a "true" para que busq
     this.automatically = true ó false
 
 Para verlo funcionando puedes acceder a este enlace:
-[Jsearch](http://www.cornersopensource.com/jsearch)
+[Jsearch](http://www.cornersopensource.com/jsearch_)
 
 Muchas gracias por el apoyo brindado!
 
