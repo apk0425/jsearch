@@ -1,6 +1,7 @@
 <?php
 
 error_reporting(0);
+$json_data = json_decode(file_get_contents('../js/databasefolder.js'), true);
 $files = array();
 $dir = "";
 $folderToFind = "files/";
@@ -43,6 +44,7 @@ function file_get_contents_curl($url) {
 function listFolderFiles($dir) {
     global $files;
     global $urlPath;
+    global $json_data;
     $ffs = scandir($dir);
     foreach ($ffs as $ff) {
         if ($ff != '.' && $ff != '..' && $ff != ".DS_Store") {
@@ -80,7 +82,8 @@ function listFolderFiles($dir) {
                         "description" => $description,
                         "claves" => $keywords
                     );
-                    array_push($files, $obj);
+                    //array_push($files, $obj);
+                    array_push($json_data, $obj);
                 } else {
                     $obj = array(
                         "title" => $ff,
@@ -88,7 +91,8 @@ function listFolderFiles($dir) {
                         "description" => "",
                         "claves" => ""
                     );
-                    array_push($files, $obj);
+                    //array_push($files, $obj);
+                    array_push($json_data, $obj);
                 }
             }
         }
@@ -96,5 +100,7 @@ function listFolderFiles($dir) {
 }
 
 listFolderFiles($dir);
-print json_encode($files);
+file_put_contents('../js/databasefolder.js', json_encode($json_data));
+//print json_encode($files);
+//print json_encode($json_data);
 ?>

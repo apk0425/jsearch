@@ -11,7 +11,7 @@ window.onload = function() {
     window.scrollTo(0, 0);
     var that = null;
     var jsearch = function() {
-        this.automatically = true; //search into folder files
+        this.automatically = false; //search into folder files
         this.items = [];
         this.itemsFound = [];
         this.totalPages = 0;

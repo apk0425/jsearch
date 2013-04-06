@@ -1,1 +1,1 @@
-[{"claves":"jio","description":"hj","link":"http:\/\/www.google.com","title":"jio"}]
+[{"claves":"jio","description":"hj","link":"http:\/\/www.google.com","title":"jio"},{"title":"alert.png","link":"http:\/\/localhost\/jsearch\/files\/imagenes\/alert.png","description":"","claves":""},{"title":"folder hi","link":"http:\/\/localhost\/jsearch\/files\/imagenes\/test_folder\/index.html","description":"hi test","claves":"folder"},{"title":"Jserach","link":"http:\/\/localhost\/jsearch\/files\/test_file.html","description":"jsearch test file","claves":"index"}]
