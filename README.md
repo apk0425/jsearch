@@ -11,6 +11,18 @@ En el archivo "script.js" que está ubicado en el directorio "js" debes editarlo
 Debes que cambiar el valor de el atributo "automatically" a "true" para que busque dentro del directorio o "false" para que busque por las palabras que hemos añadido
 
     this.automatically = true ó false
+    
+Para editar la carpeta de búsqueda debemos ir al directorio "php/index.php" y modificar la variable $folderToFind al nombre de la carpeta que necesites
+
+    $folderToFind = "files/";
+    
+Nota:
+Debes escribir el nombre desde la raíz
+
+Cuando configures el atributo en "true" debes indexar los archivos que existan en el directorio establecido en el archivo "php/index.php" en la variable $folderToFind. Para hacerlo debes ir al archivo "add.html" y dar click en el botón "Indexar archivos"
+
+Nota:
+Cada vez que añades un nuevo archivo debes que indexar de nuevo el buscador
 
 Para verlo funcionando puedes acceder a este enlace:
 [Jsearch](http://www.cornersopensource.com/jsearch_)
