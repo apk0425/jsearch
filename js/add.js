@@ -65,33 +65,26 @@ window.onload = function() {
                 }
             }
         }
+
+        var indexButton = document.getElementById("index");
+        if (indexButton.addEventListener) {
+            indexButton.addEventListener("click", this.index, false);
+        } else if (indexButton.attachEvent) {
+            indexButton.attachEvent("onclick", this.index, false);
+        }
     };
 
     add.prototype.addItem = function() {
+        document.getElementById("loading").style.display = "block";
         var params = "";
         var element = document.getElementById("addForm");
         var inputs = element.getElementsByTagName('input');
-
-        function getHTTPObject() {
-            if (typeof XMLHttpRequest != 'undefined') {
-                return new XMLHttpRequest();
-            }
-            try {
-                return new ActiveXObject("Msxml2.XMLHTTP");
-            } catch (e) {
-                try {
-                    return new ActiveXObject("Microsoft.XMLHTTP");
-                } catch (e) {
-                }
-            }
-            return false;
-        }
-
-        var http = getHTTPObject();
+        var http = this.getHTTPObject();
         var url = "php/add.php";
         http.open("POST", url, true);
         http.onreadystatechange = function() {
             if (http.readyState === 4) {
+                document.getElementById("loading").style.display = "none";
                 var notification = document.getElementById("notification");
                 var data = JSON.parse(http.responseText);
                 if (!data.error) {
@@ -100,12 +93,12 @@ window.onload = function() {
                     for (var index = 0; index < inputs.length; ++index) {
                         inputs[index].value = "";
                         inputs[index].blur();
-                        notification.style.display = "block";
-                        notification.innerHTML = '<div class="alert alert-success">Añadido correctamente</div>';
-                        setTimeout(function() {
-                            notification.style.display = "none";
-                        }, 3000);
                     }
+                    notification.style.display = "block";
+                    notification.innerHTML = '<div class="alert alert-success">Añadido correctamente</div>';
+                    setTimeout(function() {
+                        notification.style.display = "none";
+                    }, 3000);
 
                 } else {
                     that.busy = false;
@@ -134,6 +127,36 @@ window.onload = function() {
         http.send(params);
     };
 
+    add.prototype.index = function() {
+        document.getElementById("loading").style.display = "block";
+        that.busy = true;
+        var http = that.getHTTPObject();
+        var url = "php/";
+        http.open("GET", url, true);
+        http.onreadystatechange = function() {
+            if (http.readyState === 4) {
+                document.getElementById("loading").style.display = "none";
+                var notification = document.getElementById("notification");
+                var data = JSON.parse(http.responseText);
+                if (!data.error) {
+                    that.busy = false;
+                    that.error = false;
+                    notification.style.display = "block";
+                    notification.innerHTML = '<div class="alert alert-success">' + data.success + '</div>';
+                } else {
+                    that.busy = false;
+                    notification.style.display = "block";
+                    notification.innerHTML = '<div class="alert alert-error">' + data.success + '</div>';
+                }
+                setTimeout(function() {
+                    notification.style.display = "none";
+                }, 3000);
+            }
+        };
+
+        http.send(null);
+    };
+
     add.prototype.hasClass = function(ele, cls) {
         return ele.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     };
@@ -152,6 +175,21 @@ window.onload = function() {
 
     add.prototype.trim = function(string) {
         return string.replace(/^\s+/g, '').replace(/\s+$/g, '');
+    };
+
+    add.prototype.getHTTPObject = function() {
+        if (typeof XMLHttpRequest != 'undefined') {
+            return new XMLHttpRequest();
+        }
+        try {
+            return new ActiveXObject("Msxml2.XMLHTTP");
+        } catch (e) {
+            try {
+                return new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {
+            }
+        }
+        return false;
     };
 
     items = new add();

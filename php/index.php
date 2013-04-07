@@ -1,7 +1,6 @@
 <?php
 
 error_reporting(0);
-$json_data = json_decode(file_get_contents('../js/databasefolder.js'), true);
 $files = array();
 $dir = "";
 $folderToFind = "files/";
@@ -82,8 +81,7 @@ function listFolderFiles($dir) {
                         "description" => $description,
                         "claves" => $keywords
                     );
-                    //array_push($files, $obj);
-                    array_push($json_data, $obj);
+                    array_push($files, $obj);
                 } else {
                     $obj = array(
                         "title" => $ff,
@@ -91,8 +89,7 @@ function listFolderFiles($dir) {
                         "description" => "",
                         "claves" => ""
                     );
-                    //array_push($files, $obj);
-                    array_push($json_data, $obj);
+                    array_push($files, $obj);
                 }
             }
         }
@@ -100,7 +97,17 @@ function listFolderFiles($dir) {
 }
 
 listFolderFiles($dir);
-file_put_contents('../js/databasefolder.js', json_encode($json_data));
-//print json_encode($files);
-//print json_encode($json_data);
+file_put_contents('../js/databasefolder.js', '');
+$save = file_put_contents('../js/databasefolder.js', json_encode($files));
+if ($save) {
+    $obj = array(
+        "success" => "Se han indexado correctamente todos los archivos del directorio " . $folderToFind,
+    );
+    print json_encode($obj);
+}else{
+    $obj = array(
+        "error" => "No se han indexado correctamente los archivos del directorio " . $folderToFind,
+    );
+    print json_encode($obj);
+}
 ?>

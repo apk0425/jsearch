@@ -13,7 +13,7 @@ if (isset($_POST['titulo']) && isset($_POST['link']) && isset($_POST['desc']) &&
     $validate = file_put_contents('../js/database.js', json_encode($json_data));
     if ($validate) {
         $obj = array(
-            "succes" => "saved correctly"
+            "success" => "saved correctly"
         );
         print json_encode($obj);
     } else {

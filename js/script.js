@@ -26,15 +26,17 @@ window.onload = function() {
 
     jsearch.prototype.init = function() {
         document.body.addEventListener("touchmove", function(e) {
-            if (that.blockScreen)
+            if (that.blockScreen) {
                 e.preventDefault();
+            }
         }, false);
 
-        if (!this.ismobile)
+        if (!this.ismobile) {
             document.documentElement.style.overflow = "scroll";
+        }
 
         function getHTTPObject() {
-            if (typeof XMLHttpRequest != 'undefined') {
+            if (typeof XMLHttpRequest !== 'undefined') {
                 return new XMLHttpRequest();
             }
             try {
@@ -48,10 +50,11 @@ window.onload = function() {
             return false;
         }
         var url = null;
-        if (this.automatically)
-            url = "php/?v=" + (new Date()).getTime();
-        else
+        if (this.automatically) {
+            url = "js/databasefolder.js?v=" + (new Date()).getTime();
+        } else {
             url = "js/database.js?v=" + (new Date()).getTime();
+        }
 
         this.get("loading").style.display = "block";
         var http = getHTTPObject();
@@ -91,7 +94,7 @@ window.onload = function() {
         function submitForm(eventObject) {
             if (eventObject.preventDefault) {
                 eventObject.preventDefault();
-            } else if (window.event) /* for ie */ {
+            } else if (window.event) {
                 window.event.returnValue = false;
             }
 
@@ -146,8 +149,10 @@ window.onload = function() {
     };
 
     jsearch.prototype.find = function() {
-        if (this.ismobile)
+        this.get("loading").style.display = "block";
+        if (this.ismobile) {
             document.forms.searchForm.search.blur();
+        }
         this.itemsFound = [];
         this.removeClass(this.get("paginator"), "initWeb");
         this.removeClass(this.get("found"), "initWeb");
@@ -156,15 +161,24 @@ window.onload = function() {
         setTimeout(function() {
             var matchString = that.trim(document.forms.searchForm.search.value);
             that.latesSearch = matchString;
-            for (var k in that.items) {
-                if (that.items[k].title.toLowerCase().match(matchString.toLowerCase()) ||
-                        that.items[k].description.toLowerCase().match(matchString.toLowerCase()) ||
-                        that.items[k].claves.toLowerCase().match(matchString.toLowerCase())) {
-                    that.itemsFound.push(that.items[k]);
-                }
+            if (that.items.length > 0) {
+                for (var k in that.items) {
+                    if (that.items[k].title.toLowerCase().match(matchString.toLowerCase()) ||
+                            that.items[k].description.toLowerCase().match(matchString.toLowerCase()) ||
+                            that.items[k].claves.toLowerCase().match(matchString.toLowerCase())) {
+                        that.itemsFound.push(that.items[k]);
+                    }
 
-                if (k == (that.items.length - 1))
-                    that.appendElements(that.itemsFound);
+                    if (k == (that.items.length - 1)) {
+                        that.get("loading").style.display = "none";
+                        that.appendElements(that.itemsFound);
+                    }
+                }
+            } else {
+                that.busy = false;
+                that.get("loading").style.display = "none";
+                that.get("found").innerHTML = '<div class="alert alert-info">No se han encontrado resultados. Por favor inserte una nueva palabra</div>';
+                that.addClass(that.get("found"), "initWeb");
             }
         }, 1000);
     };
@@ -267,7 +281,7 @@ window.onload = function() {
     };
 
     jsearch.prototype.detectBrowser = function() {
-        var ismobile = (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile|msie/i.test(navigator.userAgent.toLowerCase()));
+        var ismobile = (/iphone|ipod|android|blackberry|opera|mini|windows\sce|palm|smartphone|iemobile|msie/i.test(navigator.userAgent.toLowerCase( )));
         return ismobile;
     };
 

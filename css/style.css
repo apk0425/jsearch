@@ -170,7 +170,7 @@ body{
     height: auto;
     overflow: hidden;
     margin: 0 auto;
-    -webkit-transition: width 0.5s linear;
+    -webkit-transition: width 0.5s;
 }
 
 /* Smartphones (portrait and landscape) ----------- */

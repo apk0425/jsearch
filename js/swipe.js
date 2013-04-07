@@ -1,4 +1,4 @@
-withSlopeFinite = function(object, slideLeft, slideRight) {
+withSlopeFinite = function(object) {
     /* Define the coordinates to events touchstart and touchend */
     var startObjX, startObjY, endObjX, endGalleryY, slopeObj, touchMoveObj, firstLocalSlopeObj, startObj, endObj;
     var n = 0;
