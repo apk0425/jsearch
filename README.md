@@ -17,13 +17,11 @@ Para editar la carpeta de búsqueda debemos ir al directorio "php/index.php" y m
     $folderToFind = "files/";
     
 Nota:
-
 Debes escribir el nombre desde la raíz
 
 Cuando configures el atributo en "true" debes indexar los archivos que existan en el directorio establecido en el archivo "php/index.php" en la variable $folderToFind. Para hacerlo debes ir al archivo "add.html" y dar click en el botón "Indexar archivos"
 
 Nota:
-
 Cada vez que añades un nuevo archivo debes que indexar de nuevo el buscador
 
 Para verlo funcionando puedes acceder a este enlace:
